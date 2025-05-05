@@ -1,60 +1,69 @@
 import pickle
 import streamlit as st
 import numpy as np
+
 # 1. Page Setup
-st.set_page_config(page_title="💧 Full Water Potability Predictor", page_icon="💧", layout="centered")
+st.set_page_config(
+    page_title="💧 Full Water Potability Predictor",
+    page_icon="💧",
+    layout="centered"
+)
+
+# Custom CSS for better layout and theme
 st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://www.shutterstock.com/image-photo/stunning-capture-clear-blue-water-600nw-2494172253.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background: linear-gradient(to right, #cceeff, #e6f7ff);
+        background-attachment: fixed;
+        font-family: 'Segoe UI', sans-serif;
     }
 
-    /* White box for the form inputs */
     div[data-testid="stForm"] {
-        background-color: rgba(255, 255, 255, 0.9);  /* white with slight transparency */
+        background-color: rgba(255, 255, 255, 0.95);
         padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    /* Optional: Style number inputs and button */
     input[type="number"] {
-        background-color: white;
-        color: black;
-        border-radius: 8px;
-        padding: 6px;
+        border-radius: 10px;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
     }
 
     button[kind="primary"] {
-        background-color: #0077b6;
+        background-color: #0288d1;
         color: white;
+        border: none;
         border-radius: 10px;
         font-weight: bold;
+        padding: 0.6rem 1.2rem;
+        transition: background-color 0.3s ease;
+    }
+
+    button[kind="primary"]:hover {
+        background-color: #0277bd;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
-#2 loading training model
+
+# 2. Load Trained Model
 with open("my_model.pkl", "rb") as file:
     loaded_model = pickle.load(file)
 
-print(loaded_model)
-
-#3 UI
-st.title('Water Potability Predictor')
+# 3. UI
+st.title('💧 Water Potability Predictor')
 st.write('Enter the parameter values to check')
 
-# input form
+# Input Form
 with st.form('input form'):
-    col1,col2,col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        ph = st.number_input('ph(0-14)')
-        hardness = st.number_input('hardness(mg/l)')
+        ph = st.number_input('pH (0–14)')
+        hardness = st.number_input('Hardness (mg/L)')
         solids = st.number_input("Solids (ppm)", 0.0)
     with col2:
         chloramines = st.number_input("Chloramines (ppm)", 0.0)
@@ -65,15 +74,16 @@ with st.form('input form'):
         trihalomethanes = st.number_input("Trihalomethanes (μg/L)", 0.0)
         turbidity = st.number_input("Turbidity (NTU)", 0.0)
 
-        submitted = st.form_submit_button("🔍 Predict")
+    submitted = st.form_submit_button("🔍 Predict")
 
-# prediction setup
+# Prediction
 if submitted:
-    input_data = np.array([[ph,hardness,solids,chloramines,sulfate,conductivity,organic_carbon,trihalomethanes,turbidity]])
+    input_data = np.array([[ph, hardness, solids, chloramines, sulfate,
+                            conductivity, organic_carbon, trihalomethanes, turbidity]])
 
     prediction = loaded_model.predict(input_data)
 
-    if (prediction[0] == 1):
-        st.success('Safe to drink')
+    if prediction[0] == 1:
+        st.success('✅ The water is Potable (Safe to drink).')
     else:
-        st.error('Not safe')
+        st.error('🚫 The water is Not Potable (Unsafe to drink).')
