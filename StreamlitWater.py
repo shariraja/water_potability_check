@@ -9,12 +9,12 @@ st.set_page_config(
     layout="centered"
 )
 
-# Custom CSS for better layout and theme
+# Custom CSS with a soft green gradient background
 st.markdown(
     """
     <style>
     .stApp {
-        background: linear-gradient(to right, #cceeff, #e6f7ff);
+        background: linear-gradient(to right, #e0f7e9, #f0fff4);  /* Light green background */
         background-attachment: fixed;
         font-family: 'Segoe UI', sans-serif;
     }
@@ -33,7 +33,7 @@ st.markdown(
     }
 
     button[kind="primary"] {
-        background-color: #0288d1;
+        background-color: #43a047;  /* Green shade */
         color: white;
         border: none;
         border-radius: 10px;
@@ -43,7 +43,7 @@ st.markdown(
     }
 
     button[kind="primary"]:hover {
-        background-color: #0277bd;
+        background-color: #388e3c;
     }
     </style>
     """,
